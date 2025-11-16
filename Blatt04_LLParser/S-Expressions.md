@@ -16,14 +16,14 @@ foo                     /// Fehler -> Variablenaufruf ohne Definition von foo
 
 (def x 77)              // x = 77
 
-(def y "zwei")          // y = "zwei" ???
-(def z true)            // z = true ???
+(def y "zwei")          // y = "zwei"
+(def z true)            // z = true
 
-(def a (+ 2 4))         // a = 6 ???
+(def a (+ 2 4))         // a = 6
 
 (def b (list 1 "zwei" false))   // b = (1 "zwei" false)
 
-(def k 5 6)             // Fehler (too many arguments / expected ')' as next token) ???
+(def k 5 6)             // Fehler (too many arguments / unexpected Token ???
 ```
 
 
@@ -37,7 +37,7 @@ foo                     /// Fehler -> Variablenaufruf ohne Definition von foo
 (> 1 2)                 // false
 
 
-(< (= 1 2) 3)           // ??? Sollte nicht gehen
+(< (= 1 2) 3)           // Fehler: Mismatched Type
 
 (< (< 1 2) true)        // true ???
 
@@ -77,11 +77,12 @@ foo                     /// Fehler -> Variablenaufruf ohne Definition von foo
 
 ```
 // Mit der eingebauten Funktion print kann der Wert eines Ausdrucks auf der Konsole ausgegeben werden:
+
 (print "blah")          // "blah"
 
-(print 5)               // ??? -> (print(str 5))
-(print (+ 2 4))         // ???
-(print (+ "One" "Two")) // "OneTwo" ???
+(print 5)               // Fehler: Unexpected Token
+(print (+ 2 4))         // Fehler: Unexpected Token
+(print (+ "One" "Two")) // Fehler: Unexpected Token
 
 ```
 
@@ -95,27 +96,27 @@ foo                     /// Fehler -> Variablenaufruf ohne Definition von foo
 (str "One" "Two")           // "OneTwo"
 (str "one: " 1 ", two")     // "one: 1, two"
 
-(str true)                  // "true" ???
+(str true)                  // "true"
 
-(str (list 1 "zwei" false)) // ??????
+(str (list 1 "zwei" false)) // "1zweifalse"
 
-(str (+ 1 2))               // "3" ???
+(str (+ 1 2))               // "3"
 ```
 
 ### list
 
 ```
-(list)                          // Geht das so?
+(list)                          // leere Liste
 
 
-(list 1 2)
-(list 1 2 3)
-(list "eins" "zwei" "drei")
-(list 1 "String" true)
+(list 1 2)                      // (1 2)
+(list 1 2 3)                    // (1 2 3)
+(list "eins" "zwei" "drei")     // ("eins" "zwei" "drei")
+(list 1 "String" true)          // (1 "string" true)
 
-(list (list 1 2 3))             // == (list 1 2 3) ???
-(list (list 1 2) 3)             // == (list 1 2 3) ???
-(list (list 1 2) (list 3 4))    // == (list 1 2 3 4) ???
+(list (list 1 2 3))             // nicht implementiert
+(list (list 1 2) 3)             // nicht implementiert
+(list (list 1 2) (list 3 4))    // nicht implementiert
 
 ```
 Funktionsaufrufe oder Operationen innerhalb Listen
