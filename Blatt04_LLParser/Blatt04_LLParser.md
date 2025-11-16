@@ -6,7 +6,7 @@
 
 ## A4.2 - Grammatik zur LISP-artigen Sprache
 
-### [Sammlung gültiger, ungültiger und fraglicher S-Expressions](https://github.com/DragonMB7/Praktikum_Compilerbau/tree/main/Blatt04_LLParser/LISP_Sketch.md)
+### [Sammlung gültiger, ungültiger und fraglicher S-Expressions](https://github.com/DragonMB7/Praktikum_Compilerbau/tree/main/Blatt04_LLParser/S-Expressions.md)
 
 ### 1.a) korrekte Programme
 
