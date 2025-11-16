@@ -6,6 +6,8 @@
 
 ## A4.2 - Grammatik zur LISP-artigen Sprache
 
+### [Sammlung gültiger, ungültiger und fraglicher S-Expressions](https://github.com/DragonMB7/Praktikum_Compilerbau/tree/main/Blatt04_LLParser/LISP_Sketch.md)
+
 ### 1.a) korrekte Programme
 
 #### Einfachste Programme: Einfachste Ausdrücke - Also Literale
@@ -40,10 +42,14 @@ false       ;; Boolean
 
 #### Funktion zur rekursiven Längenberechnung einer Liste
 
+### **Anmerkung:** ``Vermutlich falsch: (if (= input (list))``
+
+### **Begründung:** ``Der Operator "=" kann nur Int, String und Boolean vergleichen``
+
 ```
 (defn   CountListElems 
         (input) 
-        (if (= input (list))
+        (if (= input (list))    <-- VERMUTLICH FALSCH, SIEHE ANMERKUNG
             0 
             (+ 1 (CountListElems(tail (input))))
         )
@@ -105,28 +111,38 @@ if ...
 ### 2) Grammatik
 
 ```
+grammar LISP;
+
 program : sExpr+ EOF
 
-expr    : 
+expr    :                       ;
 
+// S-Expressions zwar bereits listenartige Strukturen sind,
+// der erste Eintrag aber als Operator oder Funktion interpretiert wird
 
-sExpr   : lit
+sExpr   : literal
          '(' op sExpr sExpr ')'
+        ;
 
 op      : ''
+        ;
 
 
-lit     : STRING | BOOLEAN | STRING
+literal : STRING
+        | BOOLEAN
+        | STRING
+        ;
 
 
-var     : '(' def ID ')'
+var     : '(' def ID ')'        ;
 
 
 
-STRING  : '"' [a-zA-Z0-9_]* '"'
+STRING  : '"' [a-zA-Z0-9_]* '"' ;
 
-ID      : [a-z][a-zA-Z_]*
-STRING  :  '"' (~[\n\r"])* '"'
-INTEGER : [0-9]+
-BOOLEN  : 'true' | 'false'
+ID      : [a-z][a-zA-Z_]*       ;
+STRING  :  '"' (~[\n\r"])* '"'  ;
+INTEGER : [0-9]+                ;
+BOOLEN  : 'true' | 'false'      ;
+
 ```
