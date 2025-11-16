@@ -45,16 +45,60 @@ public class Lexer {
     
     
         // while (peek != EOF):  # globale Variable, über consume()
-        // switch (peek):
-        //     case ' ': case '\t': case '\n': WS(); continue
-        //     case '[': consume(); return Token(LBRACK, '[')
-        //     case '<':
-        //              if match('='): consume(); return Token(LE, "<=")
-        //              else: consume(); return Token(LESS, '<')
-        //     ...
-        //     default:
-        //         if isLetter(peek): return NAME()
-        //         raise Error("invalid character: "+peek)
+        // switch (peek()) {
+        //
+        //	case ' ':
+        //	case '\t':
+        //	case '\n':
+        //		WS();
+        //		continue:
+        //
+        //	case '(':
+        //		consume();
+        //		return new Token (TokenType.LBRACK, "(");
+        //
+        //	case ')':
+        //		consume();
+        //		return new Token (TokenType.RBRACK, ")");
+        //
+        //	case '+':
+        //		consume();
+        //		return new Token (TokenType.PLUS, "+");
+        //
+        //	case '-':
+        //		consume();
+        //		return new Token (TokenType.MINUS, "-");
+        //
+        //	case '*':
+        //		consume();
+        //		return new Token (TokenType.MUL, "*");
+        //
+        //	case '/':
+        //		consume();
+        //		return new Token (TokenType.DIV, "/");
+        //
+        //	case '=':
+        //		consume();
+        //		return new Token (TokenType.EQUALS, "=");
+        //
+        //	case '<':
+        //		consume();
+        //		return new Token (TokenType.LOWER, "<");
+        //
+        //	case '>':
+        //		consume();
+        //		return new Token (TokenType.GREATER, ">");
+        //
+        //	case '"':
+        //		return string();	// string() durchäuft den buffer weiter, bis der String geschlossen wird
+        //
+        //
+        //
+        //	default:
+        //		if (isID(peek)) return identifier();
+        //		// Error ausgaben, fals eingabe icht legitim war
+        //
+        //}
         // return Token(EOF_Type, "<EOF>")
     
     // }

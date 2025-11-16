@@ -54,6 +54,26 @@ false       ;; Boolean
             (+ 1 (CountListElems(tail (input))))
         )
 )
+
+--------------------------
+// alternativ (potentiell)
+
+(defn   CountListElems 
+        (input) 
+        (if (isEmpty (input))
+            0 
+            (+ 1 (CountListElems(tail (input))))
+        )
+)
+
+(defn	isEmpty
+	(input)
+	(if(= (str input) "()")
+		true
+		false
+	)
+
+)
 ```
 
 ### 1.b) fehlerhafte Programme
@@ -111,38 +131,52 @@ if ...
 ### 2) Grammatik
 
 ```
-grammar LISP;
+program :	sExpr+ EOF		
 
-program : sExpr+ EOF
+sExpr :	'(' op (sExpr)* ')' |	
+	let |	
+	datatype |		
+	if |						
+	def |
+	defn |
+	list |
+	nth |
+	str |
+	print			
 
-expr    :                       ;
+let :	'(let' '(' (ID datatype)* ')' (sExpr)* ')'
+def :	'(def' ID datatype ')'
 
-// S-Expressions zwar bereits listenartige Strukturen sind,
-// der erste Eintrag aber als Operator oder Funktion interpretiert wird
+if :	'(if' sExpr ifBlock (elseBlock)? ')'
 
-sExpr   : literal
-         '(' op sExpr sExpr ')'
-        ;
+ifBlock :	do | sExpr
+elseBlock :	do | sExpr
 
-op      : ''
-        ;
+do :	'(do' (sExpr)* ')'
 
+defn :	'(' ID '(' (ID)? ')' (sExpr)* ')'
 
-literal : STRING
-        | BOOLEAN
-        | STRING
-        ;
+list :	'(list' (datatype)* ')' | lPick
+nth :	'(nth' list INTEGER ')'
 
+lPick :	'(head' list ')' | '(tail' list ')'
 
-var     : '(' def ID ')'        ;
+str :	'(str' (datatype)* ')'
 
+print :	'(print' STRING ')' | '(print' str ')'
 
 
-STRING  : '"' [a-zA-Z0-9_]* '"' ;
+op : '=' | '<' | '>' | '+' | '*' | '/' | '-' | ID		//op kann als Operator und variable dienen, deshalb ID, was z.B. eine Variable sein kann
 
-ID      : [a-z][a-zA-Z_]*       ;
-STRING  :  '"' (~[\n\r"])* '"'  ;
-INTEGER : [0-9]+                ;
-BOOLEN  : 'true' | 'false'      ;
+datatype: STRING | INTEGER | BOOLEAN
+
+
+ID      : [a-z][a-zA-Z_]*
+STRING  :  '"' (~[\n\r"])* '"'
+INTEGER : [0-9]+
+BOOLEN  : 'true' | 'false'
+
+COMMENT: ';;' ~[\n\r]* -> skip
+WHITESPACE : [ \t\n\r]+ -> skip
 
 ```
