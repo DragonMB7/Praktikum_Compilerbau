@@ -118,10 +118,10 @@ foo                     /// Fehler -> Variablenaufruf ohne Definition von foo
 (list (list 1 2) (list 3 4))    // == (list 1 2 3 4) ???
 
 ```
-Gibt es Funktionsaufrufe oder Operationen innerhalb Listen???
+Funktionsaufrufe oder Operationen innerhalb Listen
 
 ```
-(list (+ 1 2) 4)        // == (list 3 4) ???
+(list (+ 1 2) 4)        // Syntaxfehler "expected Literal as Type"
 ```
 
 ### head, tail, nth:
