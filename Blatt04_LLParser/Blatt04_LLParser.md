@@ -3,6 +3,32 @@
 ## A4.1 - First- und Follow-mengen, LL(1)
 
 
+- $First_1(S) = \{1,3\} $
+
+- $First_1(A) = \{2,\epsilon\}$
+
+- $ Follow_1(S) = Follow(S) \cup Follow_1(A) = \{1,3\} $ 
+
+- $ Follow_1(A) = First_1(S) \cup First_1(S) =  \{1,3\}$ , weil  
+        - $ \beta = S$ für beide Ableitungsregeln
+
+
+### LL(1)-Eigenschaften
+
+Für $S$: keine Regel führt nach $\epsilon$
+- $First_1(1AS) \cap First_1(3) = \{2,\epsilon\} \cap \{1,3\} = \empty$
+
+<br>
+
+Für $A$: kann zu $epsilon$ werden
+
+- $First_1(2AS) \cap Follow_1(A) = \{2\} \cap First_1(S) = \{2\} \cap \{1,3\} = \empty$
+
+<br>
+
+$\rightarrow$ Da die Schnittmengen alle Disjunkt sind, weiß der Parser immer nach einem Vorschautoken, welche Regel anzuwenden ist.
+
+<br>
 
 ## A4.2 - Grammatik zur LISP-artigen Sprache
 
@@ -131,52 +157,57 @@ if ...
 ### 2) Grammatik
 
 ```
-program :	sExpr+ EOF		
+program     : sExpr+ EOF		;
 
-sExpr :	'(' op (sExpr)* ')' |	
-	let |	
-	datatype |		
-	if |						
-	def |
-	defn |
-	list |
-	nth |
-	str |
-	print			
+sExpr       : '(' op (sExpr)* ')' 
+            | let 
+            | datatype
+            | if 
+            | def 
+            | defn 
+            | list 
+            | nth 
+            | str 
+            | print
+            | ID            
+            ;			
 
-let :	'(let' '(' (ID datatype)* ')' (sExpr)* ')'
-def :	'(def' ID datatype ')'
+let         : '(let' '(' (ID sExpr)* ')' (sExpr)* ')' ;
+// vorher let         : '(let' '(' (ID datatype)* ')' (sExpr)* ')' ;
+def         : '(def' ID sExpr ')' ;
+// vorher def         : '(def' ID datatype ')' ;
 
-if :	'(if' sExpr ifBlock (elseBlock)? ')'
+if          : '(if' sExpr condBlock (condBlock)? ')' ;
+condBlock   : do | sExpr    ;
+do          : '(do' (sExpr)* ')'    ;
 
-ifBlock :	do | sExpr
-elseBlock :	do | sExpr
-
-do :	'(do' (sExpr)* ')'
-
-defn :	'(' ID '(' (ID)? ')' (sExpr)* ')'
-
-list :	'(list' (datatype)* ')' | lPick
-nth :	'(nth' list INTEGER ')'
-
-lPick :	'(head' list ')' | '(tail' list ')'
-
-str :	'(str' (datatype)* ')'
-
-print :	'(print' STRING ')' | '(print' str ')'
+// if          : '(if' sExpr ifBlock (elseBlock)? ')' ;
+// ifBlock     : do | sExpr    ;
+// elseBlock   : do | sExpr    ;
 
 
-op : '=' | '<' | '>' | '+' | '*' | '/' | '-' | ID		//op kann als Operator und variable dienen, deshalb ID, was z.B. eine Variable sein kann
+defn        : '(defn' ID '(' (ID)+ ')' (sExpr)* ')' ;
 
-datatype: STRING | INTEGER | BOOLEAN
+list        :	'(list' (datatype)* ')' | lPick ;
+nth         :	'(nth' list INTEGER ')'         ;
+
+lPick       :	'(head' list ')' | '(tail' list ')' ;
+
+str         :	'(str' (datatype)* ')'         ;
+print       :	'(print' STRING ')' | '(print' str ')'  ;
 
 
-ID      : [a-z][a-zA-Z_]*
-STRING  :  '"' (~[\n\r"])* '"'
-INTEGER : [0-9]+
-BOOLEN  : 'true' | 'false'
+op          : '=' | '<' | '>' | '+' | '*' | '/' | '-' | ID  ;
 
-COMMENT: ';;' ~[\n\r]* -> skip
-WHITESPACE : [ \t\n\r]+ -> skip
+datatype    : STRING | INTEGER | BOOLEAN    ;
+
+
+ID          : [a-z][a-zA-Z_]*       ;
+STRING      :  '"' (~[\n\r"])* '"'  ;
+INTEGER     : [0-9]+                ;
+BOOLEAN     : 'true' | 'false'      ;
+
+COMMENT     : ';;' ~[\n\r]* -> skip ;
+WHITESPACE  : [ \t\n\r]+ -> skip    ;
 
 ```

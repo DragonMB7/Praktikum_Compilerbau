@@ -1,11 +1,11 @@
 public class Token {
 
     private final TokenType type;
-    private finale String lexeme;
+    private final String lexeme;
 
     public Token(TokenType pType, String pLexeme){
         this.type = pType;
-        this.lexem = pLexem;
+        this.lexeme = pLexeme;
     }
 
 
@@ -14,7 +14,7 @@ public class Token {
     }
 
     public String getLexem(){
-        return lexem;
+        return lexeme;
     }
 
 }
