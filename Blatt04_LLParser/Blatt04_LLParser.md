@@ -157,7 +157,7 @@ if ...
 ### 2) Grammatik
 
 ```
-program     : sExpr+ EOF		
+program     : sExpr+ EOF		;
 
 sExpr       : '(' op (sExpr)* ')' 
             | let 
@@ -169,38 +169,45 @@ sExpr       : '(' op (sExpr)* ')'
             | nth 
             | str 
             | print
+            | ID            
             ;			
 
-let         : '(let' '(' (ID datatype)* ')' (sExpr)* ')'
-def         : '(def' ID datatype ')'
+let         : '(let' '(' (ID sExpr)* ')' (sExpr)* ')' ;
+// vorher let         : '(let' '(' (ID datatype)* ')' (sExpr)* ')' ;
+def         : '(def' ID sExpr ')' ;
+// vorher def         : '(def' ID datatype ')' ;
 
-if          : '(if' sExpr ifBlock (elseBlock)? ')'
-ifBlock     : do | sExpr
-elseBlock   :	do | sExpr
-do          : '(do' (sExpr)* ')'
+if          : '(if' sExpr condBlock (condBlock)? ')' ;
+condBlock   : do | sExpr    ;
+do          : '(do' (sExpr)* ')'    ;
 
-defn        : '(' ID '(' (ID)? ')' (sExpr)* ')'
-
-list        :	'(list' (datatype)* ')' | lPick
-nth         :	'(nth' list INTEGER ')'
-
-lPick       :	'(head' list ')' | '(tail' list ')'
-
-str         :	'(str' (datatype)* ')'
-print       :	'(print' STRING ')' | '(print' str ')'
+// if          : '(if' sExpr ifBlock (elseBlock)? ')' ;
+// ifBlock     : do | sExpr    ;
+// elseBlock   : do | sExpr    ;
 
 
-op          : '=' | '<' | '>' | '+' | '*' | '/' | '-' | ID
+defn        : '(defn' ID '(' (ID)+ ')' (sExpr)* ')' ;
 
-datatype    : STRING | INTEGER | BOOLEAN
+list        :	'(list' (datatype)* ')' | lPick ;
+nth         :	'(nth' list INTEGER ')'         ;
+
+lPick       :	'(head' list ')' | '(tail' list ')' ;
+
+str         :	'(str' (datatype)* ')'         ;
+print       :	'(print' STRING ')' | '(print' str ')'  ;
 
 
-ID          : [a-z][a-zA-Z_]*
-STRING      :  '"' (~[\n\r"])* '"'
-INTEGER     : [0-9]+
-BOOLEN      : 'true' | 'false'
+op          : '=' | '<' | '>' | '+' | '*' | '/' | '-' | ID  ;
 
-COMMENT     : ';;' ~[\n\r]* -> skip
-WHITESPACE  : [ \t\n\r]+ -> skip
+datatype    : STRING | INTEGER | BOOLEAN    ;
+
+
+ID          : [a-z][a-zA-Z_]*       ;
+STRING      :  '"' (~[\n\r"])* '"'  ;
+INTEGER     : [0-9]+                ;
+BOOLEAN     : 'true' | 'false'      ;
+
+COMMENT     : ';;' ~[\n\r]* -> skip ;
+WHITESPACE  : [ \t\n\r]+ -> skip    ;
 
 ```
