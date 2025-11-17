@@ -157,52 +157,50 @@ if ...
 ### 2) Grammatik
 
 ```
-program :	sExpr+ EOF		
+program     : sExpr+ EOF		
 
-sExpr :	'(' op (sExpr)* ')' |	
-	let |	
-	datatype |		
-	if |						
-	def |
-	defn |
-	list |
-	nth |
-	str |
-	print			
+sExpr       : '(' op (sExpr)* ')' 
+            | let 
+            | datatype
+            | if 
+            | def 
+            | defn 
+            | list 
+            | nth 
+            | str 
+            | print
+            ;			
 
-let :	'(let' '(' (ID datatype)* ')' (sExpr)* ')'
-def :	'(def' ID datatype ')'
+let         : '(let' '(' (ID datatype)* ')' (sExpr)* ')'
+def         : '(def' ID datatype ')'
 
-if :	'(if' sExpr ifBlock (elseBlock)? ')'
+if          : '(if' sExpr ifBlock (elseBlock)? ')'
+ifBlock     : do | sExpr
+elseBlock   :	do | sExpr
+do          : '(do' (sExpr)* ')'
 
-ifBlock :	do | sExpr
-elseBlock :	do | sExpr
+defn        : '(' ID '(' (ID)? ')' (sExpr)* ')'
 
-do :	'(do' (sExpr)* ')'
+list        :	'(list' (datatype)* ')' | lPick
+nth         :	'(nth' list INTEGER ')'
 
-defn :	'(' ID '(' (ID)? ')' (sExpr)* ')'
+lPick       :	'(head' list ')' | '(tail' list ')'
 
-list :	'(list' (datatype)* ')' | lPick
-nth :	'(nth' list INTEGER ')'
-
-lPick :	'(head' list ')' | '(tail' list ')'
-
-str :	'(str' (datatype)* ')'
-
-print :	'(print' STRING ')' | '(print' str ')'
+str         :	'(str' (datatype)* ')'
+print       :	'(print' STRING ')' | '(print' str ')'
 
 
-op : '=' | '<' | '>' | '+' | '*' | '/' | '-' | ID		//op kann als Operator und variable dienen, deshalb ID, was z.B. eine Variable sein kann
+op          : '=' | '<' | '>' | '+' | '*' | '/' | '-' | ID
 
-datatype: STRING | INTEGER | BOOLEAN
+datatype    : STRING | INTEGER | BOOLEAN
 
 
-ID      : [a-z][a-zA-Z_]*
-STRING  :  '"' (~[\n\r"])* '"'
-INTEGER : [0-9]+
-BOOLEN  : 'true' | 'false'
+ID          : [a-z][a-zA-Z_]*
+STRING      :  '"' (~[\n\r"])* '"'
+INTEGER     : [0-9]+
+BOOLEN      : 'true' | 'false'
 
-COMMENT: ';;' ~[\n\r]* -> skip
-WHITESPACE : [ \t\n\r]+ -> skip
+COMMENT     : ';;' ~[\n\r]* -> skip
+WHITESPACE  : [ \t\n\r]+ -> skip
 
 ```
