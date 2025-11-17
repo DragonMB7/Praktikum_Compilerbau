@@ -30,12 +30,26 @@ public class Lexer {
      */
     public void consume(){
         pos ++;
-        peek = input.charAt(pos);
-        // start = (start+1) mod 2n
-        // if (start mod n == 0):
-        //     fill(buffer[start:start+n-1])
-        //     end = (start+n) mod 2n
-    }    
+        if(pos >= input.length())
+        {
+            peek = (char)-1 ;
+        }
+        else
+        {
+            peek = input.charAt(pos) ;
+        }
+    }
+
+    public boolean isEOF()
+    {
+        if(pos > input.length())
+        {
+            return true ;
+        }
+        return false ;
+    }
+
+
 
     /*
      * gibt jeweils das nächste Token zurück (bzw. EOF am Ende).
@@ -169,18 +183,24 @@ public class Lexer {
     
     // }
 
-    public void match(char c){
-        // consume()
-        // if (peek == c):
-        //     return True
-        // else: rollBack();
-        //     return False
+    public boolean match(char c){
+        consume() ;
+        if (peek == c) {
+            return true;
+        }
+        else {
+            rollBack();
+            return false ;
+        }
     }
 
-    public void rollback(){
-        // if (start == end): 
-        //     raise Error("roll back error")
-        // start = (start-1) mod 2n
+    public void rollBack(){
+        pos-- ;
+        if(pos < 0)
+        {
+            peek = (char)-1 ;
+        }
+        peek = input.charAt(pos) ;
     }
 
     public void WS(){
@@ -196,13 +216,13 @@ public class Lexer {
         }
     }
 
-    public void NAME(){
+    public Token NAME(){
 
         if(peek == 't'){
             if(match('r')){
                 if(match('u')){
                     if(match('e')){
-                        retrun new Token(TokenType.BOOL, "true");
+                        return new Token(TokenType.BOOL, "true");
                     }
                 }
             }
@@ -211,13 +231,15 @@ public class Lexer {
                 if(match('l')){
                     if(match('s')){
                         if(match('e')) {
-                            retrun new Token(TokenType.BOOL, "false");
+                            return new Token(TokenType.BOOL, "false");
                         }
                     }
                 }
             }
         }
-        String out = peek;
+
+        String out = String.valueOf(peek);
+
         consume();
         while (peek != ' ' || peek != '\t' || peek != '\n' || peek != '\r'){
 
@@ -233,8 +255,26 @@ public class Lexer {
         return new Token(TokenType.ID, out);
     }
 
-    publiv boolean isLetter(char c){
+    public Token NUMBER()
+    {
+        String num = "" ;
+        while(isDigit(peek))
+        {
+            num = num + peek ;
+            consume();
+        }
+
+        return new Token(TokenType.NUMBER, num) ;
+    }
+
+    public boolean isLetter(char c){
         return Character.isLetterOrDigit(c);
+    }
+
+    public boolean isDigit(char c)
+    {
+//      return (c == '0') || (c == '1') || (c == '2') || (c == '3') || (c == '4') || (c == '5') || (c == '6') || (c == '7') || (c == '8') || (c == '9') ;
+        return Character.isDigit(c) ;
     }
 
 
