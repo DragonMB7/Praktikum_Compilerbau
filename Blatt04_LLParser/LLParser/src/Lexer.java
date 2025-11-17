@@ -51,51 +51,117 @@ public class Lexer {
         //	case '\t':
         //	case '\n':
         //		WS();
-        //		continue:
+        //
+        //  case ';':
+        //      if(match(';')){
+        //          COMMENT();
+        //      }
+        //      System.out.println("Error: unexpected Token");
+        //      break;
         //
         //	case '(':
         //		consume();
-        //		return new Token (TokenType.LBRACK, "(");
+        //		return new Token(TokenType.LBRACK, "(");
         //
         //	case ')':
         //		consume();
-        //		return new Token (TokenType.RBRACK, ")");
+        //		return new Token(TokenType.RBRACK, ")");
         //
         //	case '+':
         //		consume();
-        //		return new Token (TokenType.PLUS, "+");
+        //		return new Token(TokenType.PLUS, "+");
         //
         //	case '-':
         //		consume();
-        //		return new Token (TokenType.MINUS, "-");
+        //		return new Token(TokenType.MINUS, "-");
         //
         //	case '*':
         //		consume();
-        //		return new Token (TokenType.MUL, "*");
+        //		return new Token(TokenType.MUL, "*");
         //
         //	case '/':
         //		consume();
-        //		return new Token (TokenType.DIV, "/");
+        //		return new Token(TokenType.DIV, "/");
         //
         //	case '=':
         //		consume();
-        //		return new Token (TokenType.EQUALS, "=");
+        //		return new Token(TokenType.EQUALS, "=");
         //
         //	case '<':
         //		consume();
-        //		return new Token (TokenType.LOWER, "<");
+        //		return new Token(TokenType.LOWER, "<");
         //
         //	case '>':
         //		consume();
-        //		return new Token (TokenType.GREATER, ">");
+        //		return new Token(TokenType.GREATER, ">");
         //
         //	case '"':
         //		return string();	// string() durchäuft den buffer weiter, bis der String geschlossen wird
         //
+        //  case 'i':
+        //      if(match('f')){
+        //          consume;
+        //          return new Token(TokenType.IF, "if");
+        //      }
+        //
+        //  case 'l':
+        //      if(match('e')){
+        //          if(match('t')){
+        //              return new Token(TokenType.LET, "let");
+        //          }
+        //      } else if(match('i')){
+        //          if(match('s')){
+        //              if(match('t')){
+        //                  return new Token(TokenType.LET, "let");
+        //              }
+        //          }
+        //      }
+        //
+        //  case 'd':
+        //      if(match('e')){
+        //          if(match('f')){
+        //              if(match('n')){
+        //                  return new Token(TokenType.DEFN, "defn");
+        //              }
+        //              return new Token(TokenType.LET, "def");
+        //          }
+        //      } else if(match('o')){
+        //          return new Token(TokenType.DO, "do")
+        //      }
+        //
+        //  case 'n':
+        //      if(match('t')){
+        //          if(match('h')){
+        //              return new Token(TokenType.NTH, "nth");
+        //          }
+        //      }
+        //
+        //  case 's':
+        //      if(match('t')){
+        //          if(match('r')){
+        //              return new Token(TokenType.STR, "str");
+        //          }
+        //      }
+        //
+        //  case 'p':
+        //      if(match('r')){
+        //          if(match('i')){
+        //              if(match('n')){
+        //                  if(match('t')){
+        //                      return new Token(TokenType.PRINT, "print");
+        //                  }
+        //              }
+        //          }
+        //      }
+        //
         //
         //
         //	default:
-        //		if (isID(peek)) return identifier();
+        //		if (Character.isLetter(peek) && Character.isLowerCase(peek)){
+        //		    return NAME();
+        //      } else if (Character.isDigit(peek)){
+        //          return NUMBER();
+        //      }
         //		// Error ausgaben, fals eingabe icht legitim war
         //
         //}
@@ -105,9 +171,9 @@ public class Lexer {
 
     public void match(char c){
         // consume()
-        // if (peek == c): 
+        // if (peek == c):
         //     return True
-        // else: rollBack(); 
+        // else: rollBack();
         //     return False
     }
 
@@ -118,15 +184,57 @@ public class Lexer {
     }
 
     public void WS(){
-        // while (peek == ' ' || peek == '\t' || ...): consume()
+        while (peek == ' ' || peek == '\t' || peek == '\n' || peek == '\r')
+        {
+            consume();
+        }
+    }
+
+    public void COMMENT(){
+        while (peek != '\n' && peek != '\r' && !isEOF()){
+            consume();
+        }
     }
 
     public void NAME(){
-        // buf = StringBuilder()
-        // do { buf.append(peek); 
-        //     consume(); 
-        // } while (isLetter(peek))
-        // return Token(NAME, buf.toString())
+
+        if(peek == 't'){
+            if(match('r')){
+                if(match('u')){
+                    if(match('e')){
+                        retrun new Token(TokenType.BOOL, "true");
+                    }
+                }
+            }
+        }else if(peek == 'f'){
+            if(match('a')){
+                if(match('l')){
+                    if(match('s')){
+                        if(match('e')) {
+                            retrun new Token(TokenType.BOOL, "false");
+                        }
+                    }
+                }
+            }
+        }
+        String out = peek;
+        consume();
+        while (peek != ' ' || peek != '\t' || peek != '\n' || peek != '\r'){
+
+            if(!Character.isLetterOrDigit(peek) && peek != '_'){
+                System.out.println("Error: incompatible Token " + peek );
+                break;
+            }
+
+            out += peek;
+            consume();
+
+        }
+        return new Token(TokenType.ID, out);
+    }
+
+    publiv boolean isLetter(char c){
+        return Character.isLetterOrDigit(c);
     }
 
 

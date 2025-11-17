@@ -10,7 +10,7 @@ public enum TokenType {
     IF, LET, DEF, DEFN, LIST, NTH, STR, PRINT, DO,
 
     // Identifiers
-    ID, NUMBER, STRING, BOOL
+    ID, NUMBER, STRING, BOOL,
 
     // Misc
     LBRACK, RBRACK, EOF
