@@ -42,7 +42,7 @@ public class Lexer {
 
     public boolean isEOF()
     {
-        if(pos > input.length())
+        if(pos > input.length()-1)
         {
             return true ;
         }
@@ -62,15 +62,24 @@ public class Lexer {
             switch (peek) {
 
                 case ' ':
+                    WS();
+                    continue;
                 case '\t':
+                    WS();
+                    continue;
                 case '\n':
                     WS();
+                    continue;
+                case '\r':
+                    WS();
+                    continue;
 
                 case ';':
                     if (match(';')) {
                         COMMENT();
+                        break;
                     }
-                    System.out.println("Error: unexpected Token");
+                    System.out.println("Error: unexpected Token ;");
                     break;
 
                 case '(':
@@ -121,12 +130,14 @@ public class Lexer {
                 case 'l':
                     if (match('e')) {
                         if (match('t')) {
+                            consume();
                             return new Token(TokenType.LET, "let");
                         }
                     } else if (match('i')) {
                         if (match('s')) {
                             if (match('t')) {
-                                return new Token(TokenType.LET, "let");
+                                consume();
+                                return new Token(TokenType.LIST, "list");
                             }
                         }
                     }
@@ -135,13 +146,16 @@ public class Lexer {
                     if (match('e')) {
                         if (match('f')) {
                             if (match('n')) {
+                                consume();
                                 return new Token(TokenType.DEFN, "defn");
                             }
-                            return new Token(TokenType.LET, "def");
+                            consume();
+                            return new Token(TokenType.DEF, "def");
                         }
                     } else if (match('o')) {
                         return new Token(TokenType.DO, "do");
                     }
+                    break;
 
                 case 'n':
                     if (match('t')) {
@@ -168,6 +182,24 @@ public class Lexer {
                         }
                     }
 
+                case 'h':
+                    if (match('e')) {
+                        if (match('a')) {
+                            if (match('d')) {
+                                return new Token(TokenType.HEAD, "head");
+                            }
+                        }
+                    }
+
+                case 't':
+                    if (match('a')) {
+                        if (match('i')) {
+                            if (match('l')) {
+                                return new Token(TokenType.TAIL, "tail");
+                            }
+                        }
+                    }
+
 
                 default:
                     if (Character.isLetter(peek) && Character.isLowerCase(peek)) {
@@ -175,7 +207,7 @@ public class Lexer {
                     } else if (Character.isDigit(peek)) {
                         return NUMBER();
                     }
-                    // Error ausgaben, fals eingabe icht legitim war
+                    System.out.println("Error: unexpected Token");
 
             }
         }
@@ -221,6 +253,7 @@ public class Lexer {
             if(match('r')){
                 if(match('u')){
                     if(match('e')){
+                        consume();
                         return new Token(TokenType.BOOL, "true");
                     }
                 }
@@ -230,6 +263,7 @@ public class Lexer {
                 if(match('l')){
                     if(match('s')){
                         if(match('e')) {
+                            consume();
                             return new Token(TokenType.BOOL, "false");
                         }
                     }
@@ -240,12 +274,12 @@ public class Lexer {
         String out = String.valueOf(peek);
 
         consume();
-        while (peek != ' ' || peek != '\t' || peek != '\n' || peek != '\r'){
+        while (peek != ' ' && peek != '\t' && peek != '\n' && peek != '\r' && Character.isLetterOrDigit(peek) || peek == '_'){
 
-            if(!Character.isLetterOrDigit(peek) && peek != '_'){
+            /*if(!Character.isLetterOrDigit(peek) && peek != '_'){
                 System.out.println("Error: incompatible Token " + peek );
                 break;
-            }
+            } */
 
             out += peek;
             consume();
@@ -269,7 +303,6 @@ public class Lexer {
     public Token STRING(){
 
         String out = "";
-        out += peek;
         consume();
         while(peek != '"'){
             if(isEOF()){
@@ -277,7 +310,9 @@ public class Lexer {
                 break;
             }
             out += peek;
+            consume();
         }
+        consume();  //letzes " noch consumen, weil sonse peek für den Nächsten Durchlauf von nextToken immer noch " ist
 
         return new Token(TokenType.STRING, out);
     }

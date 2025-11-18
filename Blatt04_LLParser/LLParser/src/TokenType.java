@@ -7,7 +7,7 @@ public enum TokenType {
     EQUALS, GREATER, LOWER,
 
     // Expressions
-    IF, LET, DEF, DEFN, LIST, NTH, STR, PRINT, DO,
+    IF, LET, DEF, DEFN, LIST, HEAD, TAIL, NTH, STR, PRINT, DO,
 
     // Identifiers
     ID, NUMBER, STRING, BOOL,

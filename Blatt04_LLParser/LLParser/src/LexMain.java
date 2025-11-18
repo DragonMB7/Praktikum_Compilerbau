@@ -11,7 +11,24 @@ public class LexMain {
 
         Lexer lex = new Lexer(input);
 
+        Parser parser = new Parser(lex);
+
+        /*
+
+        Token token = lex.nextToken();
+
+        int counter = 0;
+        while(token.getType() != TokenType.EOF){
+            counter++;
+            System.out.println(token.getLexem() + " " + counter);
+            token = lex.nextToken();
+        }
         System.out.println(lex.nextToken().getLexem());
+
+         */
+
+        parser.PROGRAM();
+
 
     }
 
