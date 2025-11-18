@@ -54,134 +54,133 @@ public class Lexer {
     /*
      * gibt jeweils das nächste Token zurück (bzw. EOF am Ende).
      */
-    
-    // Token nextToken(){
-    
-    
-        // while (peek != EOF):  # globale Variable, über consume()
-        // switch (peek()) {
-        //
-        //	case ' ':
-        //	case '\t':
-        //	case '\n':
-        //		WS();
-        //
-        //  case ';':
-        //      if(match(';')){
-        //          COMMENT();
-        //      }
-        //      System.out.println("Error: unexpected Token");
-        //      break;
-        //
-        //	case '(':
-        //		consume();
-        //		return new Token(TokenType.LBRACK, "(");
-        //
-        //	case ')':
-        //		consume();
-        //		return new Token(TokenType.RBRACK, ")");
-        //
-        //	case '+':
-        //		consume();
-        //		return new Token(TokenType.PLUS, "+");
-        //
-        //	case '-':
-        //		consume();
-        //		return new Token(TokenType.MINUS, "-");
-        //
-        //	case '*':
-        //		consume();
-        //		return new Token(TokenType.MUL, "*");
-        //
-        //	case '/':
-        //		consume();
-        //		return new Token(TokenType.DIV, "/");
-        //
-        //	case '=':
-        //		consume();
-        //		return new Token(TokenType.EQUALS, "=");
-        //
-        //	case '<':
-        //		consume();
-        //		return new Token(TokenType.LOWER, "<");
-        //
-        //	case '>':
-        //		consume();
-        //		return new Token(TokenType.GREATER, ">");
-        //
-        //	case '"':
-        //		return string();	// string() durchäuft den buffer weiter, bis der String geschlossen wird
-        //
-        //  case 'i':
-        //      if(match('f')){
-        //          consume;
-        //          return new Token(TokenType.IF, "if");
-        //      }
-        //
-        //  case 'l':
-        //      if(match('e')){
-        //          if(match('t')){
-        //              return new Token(TokenType.LET, "let");
-        //          }
-        //      } else if(match('i')){
-        //          if(match('s')){
-        //              if(match('t')){
-        //                  return new Token(TokenType.LET, "let");
-        //              }
-        //          }
-        //      }
-        //
-        //  case 'd':
-        //      if(match('e')){
-        //          if(match('f')){
-        //              if(match('n')){
-        //                  return new Token(TokenType.DEFN, "defn");
-        //              }
-        //              return new Token(TokenType.LET, "def");
-        //          }
-        //      } else if(match('o')){
-        //          return new Token(TokenType.DO, "do")
-        //      }
-        //
-        //  case 'n':
-        //      if(match('t')){
-        //          if(match('h')){
-        //              return new Token(TokenType.NTH, "nth");
-        //          }
-        //      }
-        //
-        //  case 's':
-        //      if(match('t')){
-        //          if(match('r')){
-        //              return new Token(TokenType.STR, "str");
-        //          }
-        //      }
-        //
-        //  case 'p':
-        //      if(match('r')){
-        //          if(match('i')){
-        //              if(match('n')){
-        //                  if(match('t')){
-        //                      return new Token(TokenType.PRINT, "print");
-        //                  }
-        //              }
-        //          }
-        //      }
-        //
-        //
-        //
-        //	default:
-        //		if (Character.isLetter(peek) && Character.isLowerCase(peek)){
-        //		    return NAME();
-        //      } else if (Character.isDigit(peek)){
-        //          return NUMBER();
-        //      }
-        //		// Error ausgaben, fals eingabe icht legitim war
-        //
-        //}
-        // return Token(EOF_Type, "<EOF>")
-    
-    // }
+
+    Token nextToken() {
+
+
+        while (!isEOF()) {
+            switch (peek) {
+
+                case ' ':
+                case '\t':
+                case '\n':
+                    WS();
+
+                case ';':
+                    if (match(';')) {
+                        COMMENT();
+                    }
+                    System.out.println("Error: unexpected Token");
+                    break;
+
+                case '(':
+                    consume();
+                    return new Token(TokenType.LBRACK, "(");
+
+                case ')':
+                    consume();
+                    return new Token(TokenType.RBRACK, ")");
+
+                case '+':
+                    consume();
+                    return new Token(TokenType.PLUS, "+");
+
+                case '-':
+                    consume();
+                    return new Token(TokenType.MINUS, "-");
+
+                case '*':
+                    consume();
+                    return new Token(TokenType.MUL, "*");
+
+                case '/':
+                    consume();
+                    return new Token(TokenType.DIV, "/");
+
+                case '=':
+                    consume();
+                    return new Token(TokenType.EQUALS, "=");
+
+                case '<':
+                    consume();
+                    return new Token(TokenType.LOWER, "<");
+
+                case '>':
+                    consume();
+                    return new Token(TokenType.GREATER, ">");
+
+                case '"':
+                    return STRING();    // string() durchäuft den buffer weiter, bis der String geschlossen wird
+
+                case 'i':
+                    if (match('f')) {
+                        consume();
+                        return new Token(TokenType.IF, "if");
+                    }
+
+                case 'l':
+                    if (match('e')) {
+                        if (match('t')) {
+                            return new Token(TokenType.LET, "let");
+                        }
+                    } else if (match('i')) {
+                        if (match('s')) {
+                            if (match('t')) {
+                                return new Token(TokenType.LET, "let");
+                            }
+                        }
+                    }
+
+                case 'd':
+                    if (match('e')) {
+                        if (match('f')) {
+                            if (match('n')) {
+                                return new Token(TokenType.DEFN, "defn");
+                            }
+                            return new Token(TokenType.LET, "def");
+                        }
+                    } else if (match('o')) {
+                        return new Token(TokenType.DO, "do");
+                    }
+
+                case 'n':
+                    if (match('t')) {
+                        if (match('h')) {
+                            return new Token(TokenType.NTH, "nth");
+                        }
+                    }
+
+                case 's':
+                    if (match('t')) {
+                        if (match('r')) {
+                            return new Token(TokenType.STR, "str");
+                        }
+                    }
+
+                case 'p':
+                    if (match('r')) {
+                        if (match('i')) {
+                            if (match('n')) {
+                                if (match('t')) {
+                                    return new Token(TokenType.PRINT, "print");
+                                }
+                            }
+                        }
+                    }
+
+
+                default:
+                    if (Character.isLetter(peek) && Character.isLowerCase(peek)) {
+                        return NAME();
+                    } else if (Character.isDigit(peek)) {
+                        return NUMBER();
+                    }
+                    // Error ausgaben, fals eingabe icht legitim war
+
+            }
+        }
+        return new Token(TokenType.EOF, "<EOF>");
+    }
 
     public boolean match(char c){
         consume() ;
@@ -265,6 +264,22 @@ public class Lexer {
         }
 
         return new Token(TokenType.NUMBER, num) ;
+    }
+
+    public Token STRING(){
+
+        String out = "";
+        out += peek;
+        consume();
+        while(peek != '"'){
+            if(isEOF()){
+                System.out.println("Error: unexpected EOF");
+                break;
+            }
+            out += peek;
+        }
+
+        return new Token(TokenType.STRING, out);
     }
 
     public boolean isLetter(char c){
