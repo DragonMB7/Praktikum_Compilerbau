@@ -211,3 +211,28 @@ COMMENT     : ';;' ~[\n\r]* -> skip ;
 WHITESPACE  : [ \t\n\r]+ -> skip    ;
 
 ```
+
+## Aufgaben 3 & 4 
+
+- siehe Code
+
+## Aufgabe 6
+
+### RUFF
+
+RUFF ist ein Linter und Code-Formatierer für Python. Die Entwickler in ihrem letzten Release bekannt gegeben, dass sie von einem generierten Parser (mittels LALRPOP) auf einen recursive-descent-parser umgestiegen sind um die Performance und Fähigkeit zur präzisen Fehlermeldung zu verbessern. Dafür haben sie einigen Aufwand hingenommen, sind vom Arbeitsergebnis aber überzeugt. Der von LALRPOP generierte Parser bereitete ihnen wohl an vielen Stellen schon Schwierigkeiten damit, neue (syntaktisch manchmal uneindeutige) Python-Syntax zu unterstützen, was auch zu diesem Schritt beitrug.
+
+Der Vorteil der Verwendung eines Parser-Generators zu Beginn des Projekts bestand vermutlich darin, dass dieser Teil des Projekts nur wenig Aufmerksamkeit und lediglich eine Einarbeitung in den Parser-Generator verlangte, anstatt des Abtauchens in das Rabbit-Hole der Impelmentierung eines ganz eigenen Python-Parsers, was angesichts der Python-Syntax nachvollziehbar ist. Dies ermöglichte einen schnellen Start des Projekts.
+
+### GCC
+
+Die bekannte GNU Compiler Collection für C und C++ wurden bereits 2004 bzw 2006 auf handwritten-recursive-descent-parsers umgestellt. Die umstellung erfolgte wohl um Erweiterungen der Sprachen einfacher unterstützen zu können und kontextsensitive Features besser integrieren zu können und Fehler besser behandeln zu können.
+
+### Vorteile von Parser-Generatoren
+
+Die Verwendung von Generatoren bringt in erster Linie einen geringeren Initalaufwand mit sich, sodass die Konzentration auf den Hauptteil des eigentlichen Projekts gerichtet werden kann und erstmal "Ergebnisse liefern" zu können.
+
+Generatoren wie ANTLR sind auch sehr flexibel was die Zielsprache angeht, im Grunde ist nur wichtig, dass die Grammatik korrekt ist. Außerdem werden mehr Klassen von Grammatiken abgebildet, als durch recursive-descent parser.
+
+Gegen ANTLR spricht, dass der generierte Code nicht so gut angepasst werden kann um bspw Performance-Optimierungen zu erreichen oder Spezialfälle, wie komplizierte oder seltene Verschachtelungen abzubilden.
+Nachteilhaft kann auch die Abhängigkeit von einem dritten Tool wie ANTLR sein, sofern minimierte Abhängigkeiten ein Ziel des Projekts sind.
