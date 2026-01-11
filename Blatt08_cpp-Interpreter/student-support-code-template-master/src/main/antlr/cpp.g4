@@ -2,14 +2,20 @@
 
 grammar cpp;
 
-start: stmt* EOF;
+start: main? stmt* EOF;
 
-stmt    : vardecl
+stmt    : funcdecl
+        | vardecl
         | expr ';'
         | object
+        | while
+        | if
+        | return
+        | class
+        | print_KW
         ;
 
-vardecl: dataType ID ('=' expr)? ';' | ID '=' expr ';';
+main    : (VOID_KW | INT_KW) 'main''()' '{' stmt* '}' ;
 
 // Expressions
 
@@ -38,11 +44,28 @@ primaryExpr     : ID
                 | function
                 ;
 
+class           : 'class' ID (':' 'public' ID )? '{' 'public:' konstruktordecl? stmt* '}' ;
+konstruktordecl : ID '(' paradecl ')' '{' stmt* '}' ;
+
+vardecl:    dataType '&'? ID ( '=' expr)? ';' | ID '&'? '=' expr ';';
+
+funcdecl:   dataType ID '(' paradecl? ')' '{' stmt* '}' ;
+paradecl:   dataType '&'? expr (',' dataType '&'? expr)*;
 
 function:   ID '(' parameters? ')' ;
 parameters: expr (',' expr)* ;
 
+return :    'return' expr? ';' ;
+
+
 object:     ID '.' ID ';' | ID '.' function ';' ;
+
+
+while   :  'while' '(' expr ')' '{' stmt* '}' ;
+if      :  'if' '(' expr ')' '{' condblock '}'('else' '{' elseblock '}')? ;
+
+condblock: stmt*;
+elseblock: stmt*;
 
 dataType:   BOOL_KW
         |   INT_KW
@@ -51,6 +74,13 @@ dataType:   BOOL_KW
         |   VOID_KW
         |   ID
         ;
+
+//Print Standardbibliothek
+print_KW    : 'print_bool'      #print_b
+            | 'print_String'    #print_S
+            | 'print_char'      #print_c
+            | 'print_int'       #print_i
+            ;
 
 // Lexer
 
@@ -67,9 +97,9 @@ NUM   : [0-9]+ ;                            //Integer
 CHAR  : '\'' ( ~['\\] | '\\' . ) '\'';      //Character
 STRING  :  '"' (~[\n\r"])* '"' ;            //String
 
-COMMENT :  '//' ~[\n\r]* -> skip;
-IMPORT : 'import' ~[\n\r]* -> skip;
-WS    : [ \t\n]+ -> skip ;
+COMMENT         :  ('//' | '#') ~[\n\r]* -> skip;
+COMMENT_BLOCK   : '/*' ~[\n\r]* '*/' -> skip;
+WS              : [ \t\n]+ -> skip ;
 
 
 
