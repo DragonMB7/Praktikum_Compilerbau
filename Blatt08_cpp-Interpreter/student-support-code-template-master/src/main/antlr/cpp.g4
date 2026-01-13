@@ -15,7 +15,7 @@ stmt    : funcdecl
         | print_KW
         ;
 
-main    : (VOID_KW | INT_KW) 'main''()' '{' stmt* '}' ;
+main    : (VOID_KW | INT_KW) 'main''()' block ;
 
 // Expressions
 
@@ -44,16 +44,22 @@ primaryExpr     : ID
                 | function
                 ;
 
-class           : 'class' ID (':' 'public' ID )? '{' 'public:' konstruktordecl? stmt* '}' ;
-konstruktordecl : ID '(' paradecl ')' '{' stmt* '}' ;
+class           : 'class' ID (':' 'public' ID )? '{' 'public:' member* '}' ;
+
+member  :
+        | konstruktordecl
+        | stmt
+        ;
+
+konstruktordecl : ID '(' paradecl ')' block ;
 
 vardecl:    dataType '&'? ID ( '=' expr)? ';' | ID '&'? '=' expr ';';
 
-funcdecl:   dataType ID '(' paradecl? ')' '{' stmt* '}' ;
-paradecl:   dataType '&'? expr (',' dataType '&'? expr)*;
+funcdecl:   dataType ID '(' paradecl? ')' block ;
+paradecl:   dataType '&'? ID (',' dataType '&'? ID)*;
 
 function:   ID '(' parameters? ')' ;
-parameters: expr (',' expr)* ;
+parameters: ID (',' ID)* ;
 
 return :    'return' expr? ';' ;
 
@@ -62,10 +68,9 @@ object:     ID '.' ID ';' | ID '.' function ';' ;
 
 
 while   :  'while' '(' expr ')' '{' stmt* '}' ;
-if      :  'if' '(' expr ')' '{' condblock '}'('else' '{' elseblock '}')? ;
+if      :  'if' '(' expr ')' block ('else' block)? ;
 
-condblock: stmt*;
-elseblock: stmt*;
+block: '{' stmt* '}' ;
 
 dataType:   BOOL_KW
         |   INT_KW
@@ -76,10 +81,10 @@ dataType:   BOOL_KW
         ;
 
 //Print Standardbibliothek
-print_KW    : 'print_bool'      #print_b
-            | 'print_String'    #print_S
-            | 'print_char'      #print_c
-            | 'print_int'       #print_i
+print_KW    : 'print_bool'      #print_bool
+            | 'print_String'    #print_String
+            | 'print_char'      #print_char
+            | 'print_int'       #print_int
             ;
 
 // Lexer
@@ -92,13 +97,13 @@ VOID_KW     : 'void';
 
 
 BOOL  : 'true' | 'false';                   //Boolean
-ID    : [a-z][a-zA-Z]* ;                    //Identifier
+ID    : [a-z][a-zA-Z0-9_]* ;                //Identifier
 NUM   : [0-9]+ ;                            //Integer
 CHAR  : '\'' ( ~['\\] | '\\' . ) '\'';      //Character
 STRING  :  '"' (~[\n\r"])* '"' ;            //String
 
 COMMENT         :  ('//' | '#') ~[\n\r]* -> skip;
-COMMENT_BLOCK   : '/*' ~[\n\r]* '*/' -> skip;
+COMMENT_BLOCK   : '/*' . '*/' -> skip;
 WS              : [ \t\n]+ -> skip ;
 
 
