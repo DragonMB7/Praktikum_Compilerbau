@@ -41,7 +41,6 @@ dungeon_config.json
 # JAVA, Scala #
 ###############
 *.class
-*.jar
 hs_err_pid*
 replay_pid*
 *.hprof

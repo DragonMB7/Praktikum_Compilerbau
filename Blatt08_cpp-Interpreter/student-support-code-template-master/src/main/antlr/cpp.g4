@@ -46,8 +46,7 @@ primaryExpr     : ID
 
 class           : 'class' ID (':' 'public' ID )? '{' 'public:' member* '}' ;
 
-member  :
-        | konstruktordecl
+member  : konstruktordecl
         | stmt
         ;
 
@@ -103,7 +102,7 @@ CHAR  : '\'' ( ~['\\] | '\\' . ) '\'';      //Character
 STRING  :  '"' (~[\n\r"])* '"' ;            //String
 
 COMMENT         :  ('//' | '#') ~[\n\r]* -> skip;
-COMMENT_BLOCK   : '/*' . '*/' -> skip;
+COMMENT_BLOCK   : '/*' .*? '*/' -> skip;
 WS              : [ \t\n]+ -> skip ;
 
 
