@@ -19,7 +19,8 @@ main    : (VOID_KW | INT_KW) 'main''()' block ;
 
 // Expressions
 
-expr            : logicalOrExpr ;
+expr            : ID '=' expr
+                | logicalOrExpr ;
 
 logicalOrExpr   : logicalAndExpr ( '||' logicalAndExpr )* ;
 
@@ -40,6 +41,8 @@ primaryExpr     : ID
                 | STRING
                 | CHAR
                 | BOOL
+                | ID '.' ID                                // Zugriff auf ein Feld (z.B. obj.wert)
+                | ID '.' function                          // Aufruf einer Methode (z.B. obj.berechne())
                 | '(' expr ')'
                 | function
                 ;
@@ -54,11 +57,11 @@ konstruktordecl : ID '(' paradecl ')' block ;
 
 vardecl:    dataType '&'? ID ( '=' expr)? ';' | ID '&'? '=' expr ';';
 
-funcdecl:   dataType ID '(' paradecl? ')' block ;
+funcdecl : 'virtual'? dataType ID '(' paradecl? ')' block ;
 paradecl:   dataType '&'? ID (',' dataType '&'? ID)*;
 
 function:   ID '(' parameters? ')' ;
-parameters: ID (',' ID)* ;
+parameters : expr (',' expr)* ;
 
 return :    'return' expr? ';' ;
 

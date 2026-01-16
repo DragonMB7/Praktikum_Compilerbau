@@ -1,4 +1,12 @@
 package ast;
 
-public record CharLiteral(char value) implements Expr {
+public class CharLiteral extends Expression {
+    private char value;
+
+    public CharLiteral(char value, int line, int col) {
+        super(line, col);
+        this.value = value;
+    }
+
+    public char getValue() { return value; }
 }

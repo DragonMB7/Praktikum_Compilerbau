@@ -1,10 +1,9 @@
 package ast;
 
-public class ExprStmt extends Statement
-{
+public class ParenExpr extends Expression {
     private Expression expression;
 
-    public ExprStmt(Expression expression, int line, int col) {
+    public ParenExpr(Expression expression, int line, int col) {
         super(line, col);
         this.expression = expression;
     }

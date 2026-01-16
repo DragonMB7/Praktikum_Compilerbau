@@ -1,6 +1,18 @@
 package ast;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public record Program(ArrayList<stmt> statements) implements ASTNode {
+public class Program extends ASTNode
+{
+    private MainFunction main;        // peut être null
+    private List<Statement> statements;
+
+    public Program(MainFunction main, List<Statement> statements, int line, int col) {
+        super(line, col);
+        this.main = main;
+        this.statements = statements;
+    }
+
+    public MainFunction getMain() { return main; }
+    public List<Statement> getStatements() { return statements; }
 }
