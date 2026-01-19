@@ -12,11 +12,14 @@ stmt    : funcdecl
         | if
         | return
         | class
+        //| classdecl
         ;
 
 main    : (VOID_KW | INT_KW) 'main''()' block ;
 
 class   : 'class' ID (':' 'public' ID )? '{' 'public:' member* '}' ';' ;
+
+//classdecl: ID ID '(' parameters ')' ';' ;
 
 
 member : konstruktordecl
@@ -27,8 +30,7 @@ konstruktordecl : ID '(' paradecl? ')' block ;
 
 // Expressions
 
-expr            : ID '=' expr
-                | logicalOrExpr ;
+expr            : logicalOrExpr ;
 
 logicalOrExpr   : logicalAndExpr ( '||' logicalAndExpr )* ;
 

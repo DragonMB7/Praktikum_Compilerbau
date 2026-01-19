@@ -1,6 +1,10 @@
+import SymTable.MultiScopeSymbolTable;
 import ast.*;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -52,5 +56,16 @@ public class Main {
           "  - " + stmt.getClass().getSimpleName() + " (Line " + stmt.getLine() + ")");
     }
     System.out.println("--------------------------------\n");
+  }
+
+  private static MultiScopeSymbolTable generateSymbolTable(Program program){
+      MultiScopeSymbolTable symbolTable = new MultiScopeSymbolTable();
+      List<Statement> statements = program.getStatements();
+
+      for(Statement stmt: statements){
+          //TODO: Traversierung von statements, erstellen eines Symbols für jedes Statement, falls Statement einen Block/Member hat, SinglescopeSymbolTable für diesen erstellen und in dem Knoten in Variable scope speichern
+      }
+
+      return symbolTable;
   }
 }

@@ -1,5 +1,7 @@
 package ast;
 
+import SymTable.SingleScopeSymbolTable;
+
 import java.util.List;
 
 public class FunctionDecl extends Statement {
@@ -8,6 +10,7 @@ public class FunctionDecl extends Statement {
   private String name;
   private List<ParamDecl> parameters;
   private Block body;
+  private SingleScopeSymbolTable scope;
 
   public FunctionDecl(
       boolean isVirtual,
@@ -23,6 +26,7 @@ public class FunctionDecl extends Statement {
     this.name = name;
     this.parameters = parameters;
     this.body = body;
+    this.scope = null;
   }
 
   public boolean isVirtual() {
@@ -44,4 +48,8 @@ public class FunctionDecl extends Statement {
   public Block getBody() {
     return body;
   }
+
+  public SingleScopeSymbolTable getScope() {return scope;}
+
+    public void setScope(SingleScopeSymbolTable scope) {this.scope = scope;}
 }
