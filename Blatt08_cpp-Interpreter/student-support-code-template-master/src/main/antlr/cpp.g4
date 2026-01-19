@@ -2,7 +2,7 @@
 
 grammar cpp;
 
-start: main? stmt* EOF;
+start: (main | stmt)* EOF;
 
 stmt    : funcdecl
         | vardecl
@@ -12,10 +12,18 @@ stmt    : funcdecl
         | if
         | return
         | class
-        | print_KW
         ;
 
 main    : (VOID_KW | INT_KW) 'main''()' block ;
+
+class   : 'class' ID (':' 'public' ID )? '{' 'public:' member* '}' ';' ;
+
+
+member : konstruktordecl
+       | stmt
+       ;
+
+konstruktordecl : ID '(' paradecl? ')' block ;
 
 // Expressions
 
@@ -47,15 +55,7 @@ primaryExpr     : ID
                 | function
                 ;
 
-class           : 'class' ID (':' 'public' ID )? '{' 'public:' member* '}' ;
-
-member  : konstruktordecl
-        | stmt
-        ;
-
-konstruktordecl : ID '(' paradecl ')' block ;
-
-vardecl:    dataType '&'? ID ( '=' expr)? ';' | ID '&'? '=' expr ';';
+vardecl:    dataType '&'? ID ( '=' expr)? ';';
 
 funcdecl : 'virtual'? dataType ID '(' paradecl? ')' block ;
 paradecl:   dataType '&'? ID (',' dataType '&'? ID)*;
@@ -82,12 +82,6 @@ dataType:   BOOL_KW
         |   ID
         ;
 
-//Print Standardbibliothek
-print_KW    : 'print_bool'      #print_bool
-            | 'print_String'    #print_String
-            | 'print_char'      #print_char
-            | 'print_int'       #print_int
-            ;
 
 // Lexer
 

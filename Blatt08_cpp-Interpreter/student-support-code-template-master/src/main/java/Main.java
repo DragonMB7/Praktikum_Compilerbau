@@ -1,41 +1,56 @@
+import ast.*;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
+import java.nio.file.Paths;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
 
 public class Main {
-  static void main(String... args) throws IOException, URISyntaxException {
-    IO.println("Hello World!");
 
-    // Einlesen über Konsole/Prompt
-    String input = IO.readln("expr?> ");
+  public static void main(String[] args) {
+    String filePath = "test.cpp";
 
-    cppLexer lexer = new cppLexer(CharStreams.fromString(input));
-    CommonTokenStream tokens = new CommonTokenStream(lexer);
-    cppParser parser = new cppParser(tokens);
+    try {
 
-    ParseTree tree = parser.start(); // Start-Regel
-    IO.println(tree.toStringTree(parser));
+      System.out.println("Reading: " + filePath);
+      CharStream input = CharStreams.fromPath(Paths.get(filePath));
 
-    // Einlesen über den Classpath
-    IO.readln("next?> ");
-    try (InputStream in = Main.class.getResourceAsStream("/cpp/vars.cpp")) {
-      String text = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-      IO.println("\n\n/cpp/vars.cpp");
-      IO.println(text);
+      cppLexer lexer = new cppLexer(input);
+      CommonTokenStream tokens = new CommonTokenStream(lexer);
+      cppParser parser = new cppParser(tokens);
+
+      ParseTree tree = parser.start();
+
+      ASTBuilder builder = new ASTBuilder();
+      Program program = (Program) builder.visit(tree);
+
+      printSummary(program);
+
+    } catch (IOException e) {
+      System.err.println(
+          "Unable to read the File '"
+              + filePath
+              + "' Verify that it is in the root directory of the project");
+    } catch (Exception e) {
+      System.err.println("Error during parsing :");
+      e.printStackTrace();
+    }
+  }
+
+  private static void printSummary(Program program) {
+    System.out.println("\n AST built successfully!");
+    System.out.println("--------------------------------");
+
+    if (program.getMain() != null) {
+      System.out.println("[Main Function] " + program.getMain().getReturnType() + " main()");
+      System.out.println(
+          "  -> " + program.getMain().getBody().getStatements().size() + " statements.");
     }
 
-    // Einlesen über Dateisystem
-    IO.readln("next?> ");
-    URL url = Main.class.getResource("/cpp/expr.cpp");
-    String txt = Files.readString(Path.of(url.toURI()), StandardCharsets.UTF_8);
-    IO.println("\n\n/cpp/expr.cpp");
-    IO.println(txt);
+    System.out.println("[Global Scope] " + program.getStatements().size() + " elements detected.");
+    for (Statement stmt : program.getStatements()) {
+      System.out.println(
+          "  - " + stmt.getClass().getSimpleName() + " (Line " + stmt.getLine() + ")");
+    }
+    System.out.println("--------------------------------\n");
   }
 }

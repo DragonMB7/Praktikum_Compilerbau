@@ -1,12 +1,14 @@
 package ast;
 
 public class CharLiteral extends Expression {
-    private char value;
+  private char value;
 
-    public CharLiteral(char value, int line, int col) {
-        super(line, col);
-        this.value = value;
-    }
+  public CharLiteral(char value, int line, int col) {
+    super(line, col);
+    this.value = value;
+  }
 
-    public char getValue() { return value; }
+  public char getValue() {
+    return value;
+  }
 }

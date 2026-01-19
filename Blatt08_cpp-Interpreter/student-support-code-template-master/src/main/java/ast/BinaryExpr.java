@@ -1,32 +1,46 @@
 package ast;
 
 public class BinaryExpr extends Expression {
-    public enum Operator {
+  public enum Operator {
+    OR,
+    AND,
 
-        OR, AND,
+    EQ,
+    NE,
 
-        EQ, NE,
+    LT,
+    LE,
+    GT,
+    GE,
 
-        LT, LE, GT, GE,
+    ADD,
+    SUB,
 
-        ADD, SUB,
+    MUL,
+    DIV,
+    MOD
+  }
 
-        MUL, DIV, MOD
-    }
+  private Expression left;
+  private Operator operator;
+  private Expression right;
 
-    private Expression left;
-    private Operator operator;
-    private Expression right;
+  public BinaryExpr(Expression left, Operator operator, Expression right, int line, int col) {
+    super(line, col);
+    this.left = left;
+    this.operator = operator;
+    this.right = right;
+  }
 
-    public BinaryExpr(Expression left, Operator operator, Expression right,
-                      int line, int col) {
-        super(line, col);
-        this.left = left;
-        this.operator = operator;
-        this.right = right;
-    }
+  public Expression getLeft() {
+    return left;
+  }
 
-    public Expression getLeft() { return left; }
-    public Operator getOperator() { return operator; }
-    public Expression getRight() { return right; }
+  public Operator getOperator() {
+    return operator;
+  }
+
+  public Expression getRight() {
+    return right;
+  }
 }
