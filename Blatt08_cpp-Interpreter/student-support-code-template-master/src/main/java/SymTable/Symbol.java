@@ -14,6 +14,12 @@ public class Symbol {
         this.kind = kind;
     }
 
+    public Symbol(Symbol symbol) {
+        this.name = symbol.getName();
+        this.type = symbol.getType();
+        this.kind = symbol.getKind();
+    }
+
     public String getName() { return name; }
     public String getType() { return type; }
     public String getKind() { return kind; }

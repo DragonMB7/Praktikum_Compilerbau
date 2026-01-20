@@ -6,13 +6,13 @@ import java.util.List;
 
 public class WhileStmt extends Statement {
   private Expression condition;
-  private List<Statement> body;
+  private Block block;
   private SingleScopeSymbolTable scope;
 
-  public WhileStmt(Expression condition, List<Statement> body, int line, int col) {
+  public WhileStmt(Expression condition, Block block, int line, int col) {
     super(line, col);
     this.condition = condition;
-    this.body = body;
+    this.block = block;
     this.scope = null;
   }
 
@@ -20,8 +20,8 @@ public class WhileStmt extends Statement {
     return condition;
   }
 
-  public List<Statement> getBody() {
-    return body;
+  public Block getBlock() {
+    return block;
   }
 
   public SingleScopeSymbolTable getScope() {return scope;}

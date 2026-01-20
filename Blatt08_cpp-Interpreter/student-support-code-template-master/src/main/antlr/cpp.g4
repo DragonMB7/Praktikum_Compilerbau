@@ -30,7 +30,9 @@ konstruktordecl : ID '(' paradecl? ')' block ;
 
 // Expressions
 
-expr            : logicalOrExpr ;
+expr            : ID '=' expr
+                | logicalOrExpr
+                ;
 
 logicalOrExpr   : logicalAndExpr ( '||' logicalAndExpr )* ;
 

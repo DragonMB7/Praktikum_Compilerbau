@@ -136,7 +136,9 @@ public class ASTBuilder extends cppBaseVisitor<ASTNode> {
       }
     }
 
-    return new WhileStmt(condition, body, getLine(ctx), getColumn(ctx));
+    Block block = new Block(body, getLine(ctx), getColumn(ctx));
+
+    return new WhileStmt(condition, block, getLine(ctx), getColumn(ctx));
   }
 
   @Override

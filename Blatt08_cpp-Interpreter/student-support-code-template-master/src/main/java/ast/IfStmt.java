@@ -6,14 +6,16 @@ public class IfStmt extends Statement {
   private Expression condition;
   private Block thenBlock;
   private Block elseBlock;
-  private SingleScopeSymbolTable scope;
+  private SingleScopeSymbolTable ifScope;
+  private SingleScopeSymbolTable elseScope;
 
   public IfStmt(Expression condition, Block thenBlock, Block elseBlock, int line, int col) {
     super(line, col);
     this.condition = condition;
     this.thenBlock = thenBlock;
     this.elseBlock = elseBlock;
-    this.scope = null;
+    this.ifScope = null;
+    this.elseScope = null;
   }
 
   public Expression getCondition() {
@@ -28,7 +30,11 @@ public class IfStmt extends Statement {
     return elseBlock;
   }
 
-  public SingleScopeSymbolTable getScope() {return scope;}
+  public SingleScopeSymbolTable getIfScope() {return ifScope;}
 
-    public void setScope(SingleScopeSymbolTable scope) {this.scope = scope;}
+    public SingleScopeSymbolTable getElseScope() {return elseScope;}
+
+    public void setIfScope(SingleScopeSymbolTable scope) {this.ifScope = scope;}
+
+    public void setElseScope(SingleScopeSymbolTable scope) {this.elseScope = scope;}
 }
