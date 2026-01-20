@@ -5,37 +5,38 @@ import java.util.Map;
 import java.util.Set;
 
 public class SingleScopeSymbolTable {
-    private String name;
-    private Map<String, Symbol> symbols;
+  private String name;
+  private Map<String, Symbol> symbols;
 
-    public SingleScopeSymbolTable(String name) {
-        this.name = name;
-        this.symbols = new HashMap<>();
-    }
+  public SingleScopeSymbolTable(String name) {
+    this.name = name;
+    this.symbols = new HashMap<>();
+  }
 
-    public void addSymbol(Symbol symbol) {
-        if (symbols.containsKey(symbol.getName())) {
-            // potential compiler exeptions
-            throw new RuntimeException("Fehler: Symbol '" + symbol.getName() + "' ist bereits in Scope '" + this.name + "' deklariert.");
-        }
-        symbols.put(symbol.getName(), symbol);
-        System.out.println("  [Scope '" + this.name + "'] Symbol '" + symbol.getName() + "' hinzugefügt.");
+  public void addSymbol(Symbol symbol) {
+    if (symbols.containsKey(symbol.getName())) {
+      // potential compiler exeptions
+      throw new RuntimeException(
+          "Error: Symbol '" + symbol.getName() + "' already declared in Scope '" + this.name);
     }
+    symbols.put(symbol.getName(), symbol);
+    System.out.println("  [Scope '" + this.name + "'] Symbol '" + symbol.getName() + "' added.");
+  }
 
-    public Symbol lookupSymbol(String name) {
-        return symbols.get(name);
-    }
+  public Symbol lookupSymbol(String name) {
+    return symbols.get(name);
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Set<String> getSymbolNames() {
-        return symbols.keySet();
-    }
+  public Set<String> getSymbolNames() {
+    return symbols.keySet();
+  }
 
-    @Override
-    public String toString() {
-        return "SingleScopeSymbolTable(name='" + name + "', symbols=" + getSymbolNames() + ")";
-    }
+  @Override
+  public String toString() {
+    return "SingleScopeSymbolTable(name='" + name + "', symbols=" + getSymbolNames() + ")";
+  }
 }

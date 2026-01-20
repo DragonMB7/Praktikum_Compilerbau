@@ -2,14 +2,12 @@ import SymTable.*;
 import ast.*;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 public class Main {
-    MultiScopeSymbolTable symbolTable = new MultiScopeSymbolTable();
+  static MultiScopeSymbolTable symbolTable = new MultiScopeSymbolTable();
 
   public static void main(String[] args) {
     String filePath = "test.cpp";
@@ -29,6 +27,11 @@ public class Main {
       Program program = (Program) builder.visit(tree);
 
       printSummary(program);
+      generateSymbolTable(program, null);
+
+      System.out.println(symbolTable.lookupSymbol("main").toString());
+
+      System.out.println(program.getMain().getScope().toString());
 
     } catch (IOException e) {
       System.err.println(
@@ -59,110 +62,103 @@ public class Main {
     System.out.println("--------------------------------\n");
   }
 
-  //Parent is here, to be able to allocate Scopes to their respective Classes
-  private void generateSymbolTable(ASTNode node, ASTNode parent){
+  // Parent is here, to be able to allocate Scopes to their respective Classes
+  private static void generateSymbolTable(ASTNode node, ASTNode parent) {
 
+    if (node == null) {
+      return;
+    }
 
-      if (node == null){
-          return;
+    if (node instanceof Program) {
+
+      Program program = (Program) node;
+      if (program.getMain() != null) {
+        symbolTable.addSymbolToCurrentScope("main", program.getMain().getReturnType(), "main");
+        generateSymbolTable(program.getMain().getBody(), program.getMain());
       }
 
-      if(node instanceof Program) {
+      List<Statement> statements = program.getStatements();
 
-          Program program = (Program) node;
-          if(program.getMain() != null) {
-              symbolTable.addSymbolToCurrentScope("main", program.getMain().getReturnType(), "main");
-              generateSymbolTable(program.getMain().getBody(), program.getMain());
-          }
-
-          List<Statement> statements = program.getStatements();
-
-          for (Statement stmt : statements) {
-                generateSymbolTable(stmt, null);
-          }
-
-      } else if(node instanceof Block) {
-          Block block = (Block) node;
-
-          List<Statement> statements = block.getStatements();
-
-          symbolTable.enterScope(parent.getClass() + "_Scope");
-          for (Statement stmt : statements) {
-              generateSymbolTable(stmt, parent);
-          }
-
-          SingleScopeSymbolTable scope  = symbolTable.exitScope();
-
-          //Identifies, which Class parent is and sets the scope if parent to this.scope
-          if(parent instanceof ConstructorDecl){
-              ConstructorDecl constructorDecl = (ConstructorDecl) parent;
-              constructorDecl.setScope(scope);
-          }else if(parent instanceof FunctionDecl){
-              FunctionDecl functionDecl = (FunctionDecl) parent;
-              functionDecl.setScope(scope);
-          }else if(parent instanceof IfStmt){
-              IfStmt ifStmt = (IfStmt) parent;
-              if(ifStmt.getCondition() != null) {
-                  ifStmt.setIfScope(scope);
-              } else {
-                  ifStmt.setElseScope(scope);
-              }
-          }else if(parent instanceof WhileStmt){
-              WhileStmt whileStmt = (WhileStmt) parent;
-              whileStmt.setScope(scope);
-          }else if(parent instanceof MainFunction){
-              MainFunction mainFunction = (MainFunction) parent;
-              mainFunction.setScope(scope);
-          }else{
-              System.err.println("Error: Statement calls Block Illegaly");
-          }
-
-      } else if(node instanceof FunctionDecl) {
-          FunctionDecl funcDecl = (FunctionDecl) node;
-
-          symbolTable.addSymbolToCurrentScope(funcDecl.getName(), funcDecl.getReturnType().getTypeName(), "FuncDecl");
-
-          generateSymbolTable(funcDecl.getBody(), funcDecl);
-      } else if(node instanceof VarDecl) {
-          VarDecl varDecl = (VarDecl) node;
-
-          symbolTable.addSymbolToCurrentScope(varDecl.getName(), varDecl.getType().getTypeName(), "VarDecl");
-      } else if(node instanceof BinaryExpr) {
-          BinaryExpr binaryExpr = (BinaryExpr) node;
-
-          symbolTable.addSymbolToCurrentScope("BinaryExpr", "", "BinaryExpr");
-      } else if(node instanceof Expression) {
-          Expression expression = (Expression) node;
-          generateSymbolTable(expression, expression);
-      } else if(node instanceof AssignExpr) {
-          AssignExpr assignExpr = (AssignExpr) node;
-          symbolTable.addSymbolToCurrentScope(assignExpr.getTargetName(), "", "AssignExpr");
-      } else if(node instanceof UnaryExpr) {
-          UnaryExpr unaryExpr = (UnaryExpr) node;
-          symbolTable.addSymbolToCurrentScope("UnaryExpr", "", "UnaryExpr");
-      } else if(node instanceof ParenExpr){
-          ParenExpr parenExpr = (ParenExpr) node;
-          generateSymbolTable(parenExpr.getExpression(), parenExpr);
-      } else if(node instanceof VarExpr){
-          VarExpr varExpr = (VarExpr) node;
-          symbolTable.addSymbolToCurrentScope(varExpr.getName(), "", "VarExpr");
-      } else if(node instanceof ReturnStmt){
-          ReturnStmt returnStmt = (ReturnStmt) node;
-          symbolTable.addSymbolToCurrentScope("returnStmt", "", "ReturnStmt");
-      } else if(node instanceof ClassDecl){
-          ClassDecl classDecl = (ClassDecl) node;
-          symbolTable.addSymbolToCurrentScope(classDecl.getName(), classDecl.getBaseClass(), "ClassDecl");
-
-          symbolTable.enterScope(classDecl.getName() + "_Scope");
-          List<Member> members = classDecl.getMembers();
-          for (Member member : members) {
-              generateSymbolTable(member, classDecl);
-          }
-          classDecl.setScope(symbolTable.exitScope());
-      } else if(node instanceof MemberStmt){
-          MemberStmt memberStmt = (MemberStmt) node;
-          symbolTable.addSymbolToCurrentScope("MemberStmt", "", "MemberStmt");
+      for (Statement stmt : statements) {
+        generateSymbolTable(stmt, null);
       }
 
+    } else if (node instanceof Block) {
+      Block block = (Block) node;
+
+      List<Statement> statements = block.getStatements();
+
+      symbolTable.enterScope(parent.getClass() + "_Scope");
+      for (Statement stmt : statements) {
+        generateSymbolTable(stmt, parent);
+      }
+
+      SingleScopeSymbolTable scope = symbolTable.exitScope();
+
+      // Identifies, which Class parent is and sets the scope of parent to this.scope
+      if (parent instanceof ConstructorDecl) {
+        ConstructorDecl constructorDecl = (ConstructorDecl) parent;
+        constructorDecl.setScope(scope);
+      } else if (parent instanceof FunctionDecl) {
+        FunctionDecl functionDecl = (FunctionDecl) parent;
+        functionDecl.setScope(scope);
+      } else if (parent instanceof IfStmt) {
+        IfStmt ifStmt = (IfStmt) parent;
+        if (ifStmt.getCondition() != null) {
+          ifStmt.setIfScope(scope);
+        } else {
+          ifStmt.setElseScope(scope);
+        }
+      } else if (parent instanceof WhileStmt) {
+        WhileStmt whileStmt = (WhileStmt) parent;
+        whileStmt.setScope(scope);
+      } else if (parent instanceof MainFunction) {
+        MainFunction mainFunction = (MainFunction) parent;
+        mainFunction.setScope(scope);
+      } else {
+        System.err.println("Error: Statement calls Block Illegaly");
+      }
+
+    } else if (node instanceof FunctionDecl) {
+      FunctionDecl funcDecl = (FunctionDecl) node;
+
+      symbolTable.addSymbolToCurrentScope(
+          funcDecl.getName(), funcDecl.getReturnType().getTypeName(), "FuncDecl");
+
+      generateSymbolTable(funcDecl.getBody(), funcDecl);
+    } else if (node instanceof VarDecl) {
+      VarDecl varDecl = (VarDecl) node;
+
+      symbolTable.addSymbolToCurrentScope(
+          varDecl.getName(), varDecl.getType().getTypeName(), "VarDecl");
+    } else if (node instanceof Expression) {
+      Expression expression = (Expression) node;
+      symbolTable.addSymbolToCurrentScope("Expression", "", expression.getClass().getName());
+    } else if (node instanceof ReturnStmt) {
+      ReturnStmt returnStmt = (ReturnStmt) node;
+      symbolTable.addSymbolToCurrentScope("returnStmt", "", "ReturnStmt");
+    } else if (node instanceof ClassDecl) {
+      ClassDecl classDecl = (ClassDecl) node;
+      symbolTable.addSymbolToCurrentScope(
+          classDecl.getName(), classDecl.getBaseClass(), "ClassDecl");
+
+      symbolTable.enterScope(classDecl.getName() + "_Scope");
+      List<Member> members = classDecl.getMembers();
+      for (Member member : members) {
+        generateSymbolTable(member, classDecl);
+      }
+      classDecl.setScope(symbolTable.exitScope());
+    } else if (node instanceof WhileStmt) {
+      WhileStmt whileStmt = (WhileStmt) node;
+      symbolTable.addSymbolToCurrentScope("whileStmt", "", "WhileStmt");
+
+      generateSymbolTable(whileStmt.getBlock(), whileStmt);
+    } else if (node instanceof IfStmt) {
+      IfStmt ifStmt = (IfStmt) node;
+      symbolTable.addSymbolToCurrentScope("IfStmt", "", "IfStmt");
+
+      generateSymbolTable(ifStmt.getThenBlock(), ifStmt);
+      generateSymbolTable(ifStmt.getElseBlock(), ifStmt);
+    }
   }
 }

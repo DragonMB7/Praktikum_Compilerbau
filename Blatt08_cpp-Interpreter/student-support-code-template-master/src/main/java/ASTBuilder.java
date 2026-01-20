@@ -58,8 +58,6 @@ public class ASTBuilder extends cppBaseVisitor<ASTNode> {
     } else if (ctx.expr() != null) {
       Expression expr = (Expression) visit(ctx.expr());
       return new ExprStmt(expr, getLine(ctx), getColumn(ctx));
-    } else if (ctx.object() != null) {
-      return visit(ctx.object());
     } else if (ctx.while_() != null) {
       return visit(ctx.while_());
     } else if (ctx.if_() != null) {

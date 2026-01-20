@@ -2,7 +2,7 @@ int add(int a, int b) {
     return a + b;
 }
 
-class calculator {
+/*class calculator {
 public:
     int value;
 
@@ -14,13 +14,14 @@ public:
         value = 0;
     }
 
-};
+};*/
 
 int main() {
     int x = 5;
     int y = 10;
     int z = add(x, y);
     print_int(z);
+
     return 0;
 }
 

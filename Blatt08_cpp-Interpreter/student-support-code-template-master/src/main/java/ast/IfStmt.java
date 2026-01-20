@@ -30,11 +30,19 @@ public class IfStmt extends Statement {
     return elseBlock;
   }
 
-  public SingleScopeSymbolTable getIfScope() {return ifScope;}
+  public SingleScopeSymbolTable getIfScope() {
+    return ifScope;
+  }
 
-    public SingleScopeSymbolTable getElseScope() {return elseScope;}
+  public SingleScopeSymbolTable getElseScope() {
+    return elseScope;
+  }
 
-    public void setIfScope(SingleScopeSymbolTable scope) {this.ifScope = scope;}
+  public void setIfScope(SingleScopeSymbolTable scope) {
+    this.ifScope = scope;
+  }
 
-    public void setElseScope(SingleScopeSymbolTable scope) {this.elseScope = scope;}
+  public void setElseScope(SingleScopeSymbolTable scope) {
+    this.elseScope = scope;
+  }
 }

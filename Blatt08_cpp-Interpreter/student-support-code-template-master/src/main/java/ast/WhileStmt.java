@@ -2,8 +2,6 @@ package ast;
 
 import SymTable.SingleScopeSymbolTable;
 
-import java.util.List;
-
 public class WhileStmt extends Statement {
   private Expression condition;
   private Block block;
@@ -24,7 +22,11 @@ public class WhileStmt extends Statement {
     return block;
   }
 
-  public SingleScopeSymbolTable getScope() {return scope;}
+  public SingleScopeSymbolTable getScope() {
+    return scope;
+  }
 
-    public void setScope(SingleScopeSymbolTable scope) {this.scope = scope;}
+  public void setScope(SingleScopeSymbolTable scope) {
+    this.scope = scope;
+  }
 }

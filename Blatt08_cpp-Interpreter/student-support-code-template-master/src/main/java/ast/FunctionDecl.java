@@ -1,7 +1,6 @@
 package ast;
 
 import SymTable.SingleScopeSymbolTable;
-
 import java.util.List;
 
 public class FunctionDecl extends Statement {
@@ -49,7 +48,11 @@ public class FunctionDecl extends Statement {
     return body;
   }
 
-  public SingleScopeSymbolTable getScope() {return scope;}
+  public SingleScopeSymbolTable getScope() {
+    return scope;
+  }
 
-    public void setScope(SingleScopeSymbolTable scope) {this.scope = scope;}
+  public void setScope(SingleScopeSymbolTable scope) {
+    this.scope = scope;
+  }
 }

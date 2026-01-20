@@ -22,7 +22,11 @@ public class MainFunction extends ASTNode {
     return body;
   }
 
-  public void setScope(SingleScopeSymbolTable scope) {this.scope = scope;}
+  public void setScope(SingleScopeSymbolTable scope) {
+    this.scope = scope;
+  }
 
-  public SingleScopeSymbolTable getScope() {return scope;}
+  public SingleScopeSymbolTable getScope() {
+    return scope;
+  }
 }

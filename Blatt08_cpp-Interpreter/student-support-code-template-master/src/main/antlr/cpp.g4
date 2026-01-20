@@ -7,7 +7,6 @@ start: (main | stmt)* EOF;
 stmt    : funcdecl
         | vardecl
         | expr ';'
-        | object
         | while
         | if
         | return
@@ -68,10 +67,6 @@ function:   ID '(' parameters? ')' ;
 parameters : expr (',' expr)* ;
 
 return :    'return' expr? ';' ;
-
-
-object:     ID '.' ID ';' | ID '.' function ';' ;
-
 
 while   :  'while' '(' expr ')' '{' stmt* '}' ;
 if      :  'if' '(' expr ')' block ('else' block)? ;
