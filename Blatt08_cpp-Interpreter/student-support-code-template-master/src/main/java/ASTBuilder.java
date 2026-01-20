@@ -275,6 +275,12 @@ public class ASTBuilder extends cppBaseVisitor<ASTNode> {
 
   @Override
   public Expression visitExpr(cppParser.ExprContext ctx) {
+    if (ctx.ID() != null && ctx.expr() != null) {
+      String varName = ctx.ID().getText();
+      Expression valueExpr = (Expression) visit(ctx.expr());
+      return new AssignExpr(varName, valueExpr, getLine(ctx), getColumn(ctx));
+    }
+
     if (ctx.logicalOrExpr() != null) {
       return (Expression) visit(ctx.logicalOrExpr());
     }
