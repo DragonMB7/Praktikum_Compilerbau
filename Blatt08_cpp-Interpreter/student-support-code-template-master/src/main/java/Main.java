@@ -1,5 +1,6 @@
 import SymTable.*;
 import ast.*;
+import interpreter.Interpreter; // <--- IMPORTANT: Import the Interpreter
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
@@ -29,9 +30,26 @@ public class Main {
       printSummary(program);
       generateSymbolTable(program, null);
 
-      System.out.println(symbolTable.lookupSymbol("main").toString());
+      System.out.println("Main Symbol: " + symbolTable.lookupSymbol("main").toString());
 
-      System.out.println(program.getMain().getScope().toString());
+      if (program.getMain() != null && program.getMain().getScope() != null) {
+        System.out.println("Main Scope: " + program.getMain().getScope().toString());
+      }
+
+      // ---------------------------------------------------------
+      // ADDITION: LAUNCHING THE INTERPRETER
+      // ---------------------------------------------------------
+      System.out.println("\n========================================");
+      System.out.println("       START OF INTERPRETATION       ");
+      System.out.println("========================================");
+
+      Interpreter interpreter = new Interpreter();
+      interpreter.interpret(program);
+
+      System.out.println("\n========================================");
+      System.out.println("        END OF INTERPRETATION        ");
+      System.out.println("========================================");
+      // ---------------------------------------------------------
 
     } catch (IOException e) {
       System.err.println(
@@ -39,7 +57,7 @@ public class Main {
               + filePath
               + "' Verify that it is in the root directory of the project");
     } catch (Exception e) {
-      System.err.println("Error during parsing :");
+      System.err.println("Error during execution:");
       e.printStackTrace();
     }
   }
@@ -88,7 +106,7 @@ public class Main {
 
       List<Statement> statements = block.getStatements();
 
-      symbolTable.enterScope(parent.getClass() + "_Scope");
+      symbolTable.enterScope(parent.getClass().getSimpleName() + "_Scope");
       for (Statement stmt : statements) {
         generateSymbolTable(stmt, parent);
       }
@@ -128,7 +146,7 @@ public class Main {
         MainFunction mainFunction = (MainFunction) parent;
         mainFunction.setScope(scope);
       } else {
-        System.err.println("Error: Statement calls Block Illegaly");
+        // System.err.println("Error: Statement calls Block illegally");
         return;
       }
 

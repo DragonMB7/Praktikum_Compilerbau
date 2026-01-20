@@ -1,28 +1,23 @@
-int add(int a, int b) {
-    return a + b;
-}
-
-/*class calculator {
+class calculator {
 public:
     int value;
 
-    virtual int calculate(int x) {
-        return x + value;
+    int add(int n) {
+        value = value + n;
+        return value;
     }
-
-    calculator() {
-        value = 0;
-    }
-
-};*/
+};
 
 int main() {
-    int x = 5;
-    int y = 10;
-    int z = add(x, y);
-    print_int(z);
+    print_int(111);
+
+    calculator c;
+
+    c.value = 5;
+
+    c.add(10);
+
+    print_int(c.value);
 
     return 0;
 }
-
-
