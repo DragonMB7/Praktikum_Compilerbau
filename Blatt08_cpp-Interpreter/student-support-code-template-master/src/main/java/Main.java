@@ -33,6 +33,9 @@ public class Main {
 
       System.out.println(program.getMain().getScope().toString());
 
+      Repl repl = new Repl();
+      repl.start();
+
     } catch (IOException e) {
       System.err.println(
           "Unable to read the File '"
