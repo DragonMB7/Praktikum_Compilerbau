@@ -98,10 +98,22 @@ public class Main {
       // Identifies, which Class parent is and sets the scope of parent to this.scope
       if (parent instanceof ConstructorDecl) {
         ConstructorDecl constructorDecl = (ConstructorDecl) parent;
+
+        for (ParamDecl paramDecl : constructorDecl.getParameters()) {
+          scope.addSymbol(
+              new Symbol(paramDecl.getName(), paramDecl.getType().getTypeName(), "ParamDecl"));
+        }
         constructorDecl.setScope(scope);
+
       } else if (parent instanceof FunctionDecl) {
         FunctionDecl functionDecl = (FunctionDecl) parent;
+
+        for (ParamDecl paramDecl : functionDecl.getParameters()) {
+          scope.addSymbol(
+              new Symbol(paramDecl.getName(), paramDecl.getType().getTypeName(), "ParamDecl"));
+        }
         functionDecl.setScope(scope);
+
       } else if (parent instanceof IfStmt) {
         IfStmt ifStmt = (IfStmt) parent;
         if (ifStmt.getCondition() != null) {
@@ -117,6 +129,7 @@ public class Main {
         mainFunction.setScope(scope);
       } else {
         System.err.println("Error: Statement calls Block Illegaly");
+        return;
       }
 
     } else if (node instanceof FunctionDecl) {
@@ -159,6 +172,9 @@ public class Main {
 
       generateSymbolTable(ifStmt.getThenBlock(), ifStmt);
       generateSymbolTable(ifStmt.getElseBlock(), ifStmt);
+    } else if (node instanceof Member) {
+      MemberStmt memberStmt = (MemberStmt) node;
+      generateSymbolTable(memberStmt.getStatement(), parent);
     }
   }
 }
