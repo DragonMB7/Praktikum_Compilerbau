@@ -1,23 +1,32 @@
-class calculator {
+class counter {
 public:
-    int value;
+    int count;
 
-    int add(int n) {
-        value = value + n;
-        return value;
+    void set(int n) {
+        count = n;
+    }
+
+    // ATTENTION : Espace obligatoire entre void et increment
+    void increment() {
+        count = count + 1;
     }
 };
 
 int main() {
-    print_int(111);
+    counter c1;
+    counter c2;
 
-    calculator c;
+    // Initialisation
+    c1.set(10);
+    c2.set(100);
 
-    c.value = 5;
+    // Tests
+    c1.increment(); // c1 devient 11
+    c1.increment(); // c1 devient 12
 
-    c.add(10);
-
-    print_int(c.value);
+    // Affichage
+    print_int(c1.count); // Doit afficher 12
+    print_int(c2.count); // Doit afficher 100
 
     return 0;
 }

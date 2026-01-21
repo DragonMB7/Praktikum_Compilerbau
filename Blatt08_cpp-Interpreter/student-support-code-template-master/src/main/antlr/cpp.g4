@@ -52,8 +52,8 @@ primaryExpr     : ID
                 | STRING
                 | CHAR
                 | BOOL
-                | ID '.' ID                                // Zugriff auf ein Feld (z.B. obj.wert)
-                | ID '.' function                          // Aufruf einer Methode (z.B. obj.berechne())
+                | ID '.' function                               // Zugriff auf ein Feld (z.B. obj.wert)
+                | ID '.' ID                           // Aufruf einer Methode (z.B. obj.berechne())
                 | '(' expr ')'
                 | function
                 ;
