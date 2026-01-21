@@ -434,67 +434,51 @@ public class ASTBuilder extends cppBaseVisitor<ASTNode> {
 
   @Override
   public Expression visitPrimaryExpr(cppParser.PrimaryExprContext ctx) {
-    // 1. NUM
-    if (ctx.NUM() != null) {
-      int value = Integer.parseInt(ctx.NUM().getText());
-      return new IntLiteral(value, getLine(ctx), getColumn(ctx));
-    }
-
-    // 2. STRING
-    if (ctx.STRING() != null) {
-      String text = ctx.STRING().getText();
-      String value = text.substring(1, text.length() - 1);
-      value = processEscapes(value);
-      return new StringLiteral(value, getLine(ctx), getColumn(ctx));
-    }
-
-    // 3. CHAR
+    if (ctx.NUM() != null)
+      return new IntLiteral(Integer.parseInt(ctx.NUM().getText()), getLine(ctx), getColumn(ctx));
+    if (ctx.BOOL() != null)
+      return new BoolLiteral(ctx.BOOL().getText().equals("true"), getLine(ctx), getColumn(ctx));
+    if (ctx.STRING() != null)
+      return new StringLiteral(
+          ctx.STRING().getText().replace("\"", ""), getLine(ctx), getColumn(ctx));
     if (ctx.CHAR() != null) {
-      String text = ctx.CHAR().getText();
-      String charStr = text.substring(1, text.length() - 1);
-      char value = charStr.startsWith("\\") ? processCharEscape(charStr) : charStr.charAt(0);
-      return new CharLiteral(value, getLine(ctx), getColumn(ctx));
+      String t = ctx.CHAR().getText();
+      return new CharLiteral(t.length() > 2 ? t.charAt(1) : ' ', getLine(ctx), getColumn(ctx));
     }
 
-    // 4. BOOL
-    if (ctx.BOOL() != null) {
-      boolean value = ctx.BOOL().getText().equals("true");
-      return new BoolLiteral(value, getLine(ctx), getColumn(ctx));
+    if (ctx.getChildCount() == 3 && ctx.getChild(0).getText().equals("(")) {
+      return new ParenExpr((Expression) visit(ctx.expr()), getLine(ctx), getColumn(ctx));
     }
 
-    // 5. '(' expr ')'
-    if (ctx.expr() != null) {
-      Expression expr = (Expression) visit(ctx.expr());
-      return new ParenExpr(expr, getLine(ctx), getColumn(ctx));
-    }
 
-    if (ctx.function() != null && ctx.ID().isEmpty()) {
-      return (Expression) visit(ctx.function());
-    }
-
-    if (ctx.ID().size() == 1 && ctx.function() != null) {
+    if (ctx.ID().size() == 2 && ctx.getText().contains("(")) {
       String objectName = ctx.ID(0).getText();
-      FunctionCall funcCall = (FunctionCall) visit(ctx.function());
-      return new MethodCallExpr(
-          objectName,
-          funcCall.getFunctionName(),
-          funcCall.getArguments(),
-          getLine(ctx),
-          getColumn(ctx));
+      String methodName = ctx.ID(1).getText();
+
+      List<Expression> args = new ArrayList<>();
+      if (ctx.parameters() != null) {
+        for (cppParser.ExprContext exprCtx : ctx.parameters().expr()) {
+          args.add((Expression) visit(exprCtx));
+        }
+      }
+      return new MethodCallExpr(objectName, methodName, args, getLine(ctx), getColumn(ctx));
     }
 
-    if (ctx.ID().size() == 2 && ctx.function() == null) {
+    if (ctx.ID().size() == 2) {
       String objectName = ctx.ID(0).getText();
       String memberName = ctx.ID(1).getText();
       return new MemberAccessExpr(objectName, memberName, getLine(ctx), getColumn(ctx));
     }
 
-    if (ctx.ID().size() == 1 && ctx.function() == null) {
+    if (ctx.function() != null) {
+      return (Expression) visit(ctx.function());
+    }
+
+    if (ctx.ID().size() == 1) {
       return new VarExpr(ctx.ID(0).getText(), getLine(ctx), getColumn(ctx));
     }
 
-    throw new RuntimeException(
-        "primaryExpr non reconnu à la ligne " + getLine(ctx) + ": " + ctx.getText());
+    throw new RuntimeException("Unknowned Expression line  " + getLine(ctx) + " : " + ctx.getText());
   }
 
   @Override

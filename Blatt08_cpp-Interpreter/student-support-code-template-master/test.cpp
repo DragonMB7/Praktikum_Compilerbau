@@ -1,32 +1,25 @@
-class counter {
-public:
-    int count;
-
-    void set(int n) {
-        count = n;
-    }
-
-    // ATTENTION : Espace obligatoire entre void et increment
-    void increment() {
-        count = count + 1;
-    }
-};
+int dangerous_function() {
+    print("DANGER! This should not run!");
+    return 0;
+}
 
 int main() {
-    counter c1;
-    counter c2;
+    bool safe = true;
 
-    // Initialisation
-    c1.set(10);
-    c2.set(100);
+    print("Test Short-Circuit OR:");
+    // Since 'safe' is true, dangerous_function() MUST NOT be called
+    if (safe || dangerous_function()) {
+        print("Safe passed");
+    }
 
-    // Tests
-    c1.increment(); // c1 devient 11
-    c1.increment(); // c1 devient 12
-
-    // Affichage
-    print_int(c1.count); // Doit afficher 12
-    print_int(c2.count); // Doit afficher 100
+    print("Test Short-Circuit AND:");
+    bool lie = false;
+    // Since 'lie' is false, dangerous_function() MUST NOT be called
+    if (lie && dangerous_function()) {
+        // Nothing
+    } else {
+        print("Lie passed");
+    }
 
     return 0;
 }

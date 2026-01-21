@@ -164,10 +164,8 @@ public class Main {
           varDecl.getName(), varDecl.getType().getTypeName(), "VarDecl");
     } else if (node instanceof Expression) {
       Expression expression = (Expression) node;
-      symbolTable.addSymbolToCurrentScope("Expression", "", expression.getClass().getName());
     } else if (node instanceof ReturnStmt) {
       ReturnStmt returnStmt = (ReturnStmt) node;
-      symbolTable.addSymbolToCurrentScope("returnStmt", "", "ReturnStmt");
     } else if (node instanceof ClassDecl) {
       ClassDecl classDecl = (ClassDecl) node;
       symbolTable.addSymbolToCurrentScope(
@@ -181,12 +179,10 @@ public class Main {
       classDecl.setScope(symbolTable.exitScope());
     } else if (node instanceof WhileStmt) {
       WhileStmt whileStmt = (WhileStmt) node;
-      symbolTable.addSymbolToCurrentScope("whileStmt", "", "WhileStmt");
 
       generateSymbolTable(whileStmt.getBlock(), whileStmt);
     } else if (node instanceof IfStmt) {
       IfStmt ifStmt = (IfStmt) node;
-      symbolTable.addSymbolToCurrentScope("IfStmt", "", "IfStmt");
 
       generateSymbolTable(ifStmt.getThenBlock(), ifStmt);
       generateSymbolTable(ifStmt.getElseBlock(), ifStmt);
