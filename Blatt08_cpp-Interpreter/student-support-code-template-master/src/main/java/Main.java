@@ -1,6 +1,6 @@
 import SymTable.*;
 import ast.*;
-import interpreter.Interpreter; // <--- IMPORTANT: Import the Interpreter
+import interpreter.Interpreter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
@@ -50,6 +50,9 @@ public class Main {
       System.out.println("        END OF INTERPRETATION        ");
       System.out.println("========================================");
       // ---------------------------------------------------------
+
+      Repl repl = new Repl();
+      repl.start();
 
     } catch (IOException e) {
       System.err.println(
